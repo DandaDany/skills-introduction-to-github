@@ -1,0 +1,26 @@
+name: Temporary ALIGN-047 FA part00 artifact bridge
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/align047-part00-artifact.yml]
+permissions:
+  contents: read
+jobs:
+  bridge:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: align047-fa-relay-temp
+          fetch-depth: 1
+      - name: Verify source part
+        run: |
+          test -f relay_parts/model.safetensors.part-00
+          sha256sum relay_parts/model.safetensors.part-00
+      - uses: actions/upload-artifact@v4
+        with:
+          name: align047-fa-part00-bridge
+          path: relay_parts/model.safetensors.part-00
+          compression-level: 0
+          retention-days: 1
