@@ -1,0 +1,18 @@
+name: Temporary ALIGN-047 artifact bridge probe
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/align047-artifact-probe.yml]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: printf 'ALIGN047_ARTIFACT_BRIDGE_PROBE\n' > probe.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: align047-artifact-bridge-probe
+          path: probe.txt
+          compression-level: 0
+          retention-days: 1
