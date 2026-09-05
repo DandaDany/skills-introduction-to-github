@@ -1,0 +1,11 @@
+1e38bac1853412871318e82a1ba69a8be677619b56025bbfcccdb41b6cafe82d  wheel_relay/soundfile-0.14.0-py2.py3-none-manylinux_2_28_x86_64.whl
+369cc9fc8cc10cb24143873a0d95438bb8ee257bb80c71989e3ee290e8d72c67  wheel_relay/tokenizers-0.22.2-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+3b033078e86f3c4a658e5697fac8995764fad9e799563616b630136b613167f1  wheel_relay/soxr-1.1.0-cp312-abi3-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+3e2091cd341423207e2f084a6654b1efcd250dc326f2a37d6dde446e07cabb11  wheel_relay/accelerate-1.12.0-py3-none-any.whl
+48f0c8eac16145dfce371e9d2d7772854a4f591bcb56c9cf548accf531d54270  wheel_relay/huggingface_hub-0.36.2-py3-none-any.whl
+4c9e9de11333ddfe5114bc872c9f370509198acf0b87a832a0ab9458e2bd0550  wheel_relay/transformers-4.57.6-py3-none-any.whl
+4fb475b3b74f19d8a1e5ec7133fcec9fb8f3dbe1292e711e08a6f9857e6f50ae  wheel_relay/nagisa-0.2.11-cp313-cp313-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+8a032e8d8ebc73dec079364b9b4a6837638a2d106e8472314e685ffbf163e700  wheel_relay/av-18.1.0-cp311-abi3-manylinux_2_28_x86_64.whl
+b9c55a38413298f3a990a4475467399daec6e8f4172363053fc42e2166c2dfd3  wheel_relay/qwen_asr-0.0.6-py3-none-any.whl
+f111db07af669c83333411c5177131e18e831fe666d6a55a1af263952ada8939  wheel_relay/qwen_omni_utils-0.0.9-py3-none-any.whl
+fd6f3f93c9a0a7cc2788ee63fb763353d4bd2e89b0751bc78fcf7dda00bea774  wheel_relay/safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
