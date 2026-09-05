@@ -1,4 +1,4 @@
-name: Temporary ALIGN-047 public Qwen FA relay
+name: Temporary ALIGN-047 public Qwen FA git relay
 
 on:
   push:
@@ -17,9 +17,12 @@ jobs:
       MODEL_ID: Qwen/Qwen3-ForcedAligner-0.6B
       MODEL_REVISION: c7cbfc2048c462b0d63a45797104fc9db3ad62b7
       EXPECTED_WEIGHTS_SHA256: 47831d0e82f96b20e9034dba01a075ee06436654719f6a68289e49f1b65ce0e7
-      RELEASE_TAG: align047-fa-public-relay-temp
+      RELAY_BRANCH: align047-fa-relay-temp
       HF_HUB_DISABLE_TELEMETRY: '1'
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.12'
@@ -39,20 +42,33 @@ jobs:
           PY
           rm -rf model/.cache
           test "$(sha256sum model/model.safetensors | awk '{print $1}')" = "$EXPECTED_WEIGHTS_SHA256"
-          mkdir -p relay/meta
-          split -b 240M -d -a 2 model/model.safetensors relay/model.safetensors.part-
-          find model -maxdepth 1 -type f ! -name model.safetensors -exec cp {} relay/meta/ \;
-          sha256sum relay/model.safetensors.part-* | LC_ALL=C sort > relay/parts.sha256
-          (cd relay/meta && sha256sum * | LC_ALL=C sort > ../meta.sha256)
-          printf '%s\n' "$MODEL_ID" > relay/model_id.txt
-          printf '%s\n' "$MODEL_REVISION" > relay/revision.txt
-          printf '%s  model.safetensors\n' "$EXPECTED_WEIGHTS_SHA256" > relay/model.safetensors.sha256
-      - name: Publish temporary public release
-        env:
-          GH_TOKEN: ${{ github.token }}
+          rm -rf relay_parts
+          mkdir -p relay_parts/meta
+          split -b 90M -d -a 2 model/model.safetensors relay_parts/model.safetensors.part-
+          find model -maxdepth 1 -type f ! -name model.safetensors -exec cp {} relay_parts/meta/ \;
+          sha256sum relay_parts/model.safetensors.part-* | LC_ALL=C sort > relay_parts/parts.sha256
+          (cd relay_parts/meta && sha256sum * | LC_ALL=C sort > ../meta.sha256)
+          printf '%s\n' "$MODEL_ID" > relay_parts/model_id.txt
+          printf '%s\n' "$MODEL_REVISION" > relay_parts/revision.txt
+          printf '%s  model.safetensors\n' "$EXPECTED_WEIGHTS_SHA256" > relay_parts/model.safetensors.sha256
+          find relay_parts -type f -printf '%P %s\n' | sort
+      - name: Publish temporary git branch in bounded pushes
         shell: bash
         run: |
           set -euo pipefail
-          gh release delete "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --cleanup-tag -y || true
-          gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --prerelease --title 'Temporary ALIGN-047 public Qwen FA relay' --notes 'Temporary relay of the public Qwen3-ForcedAligner-0.6B pinned model only. Contains no private or Reserve data.'
-          gh release upload "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" relay/model.safetensors.part-* relay/parts.sha256 relay/meta.sha256 relay/model.safetensors.sha256 relay/model_id.txt relay/revision.txt relay/meta/*
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git config http.postBuffer 524288000
+          git switch -C "$RELAY_BRANCH"
+          git rm -rf --ignore-unmatch relay_parts >/dev/null 2>&1 || true
+          parts=(relay_parts/model.safetensors.part-*)
+          for p in "${parts[@]:0:7}"; do git add "$p"; done
+          git add relay_parts/parts.sha256 relay_parts/model.safetensors.sha256 relay_parts/model_id.txt relay_parts/revision.txt relay_parts/meta.sha256 relay_parts/meta/
+          git commit -m 'chore: temporary public FA relay parts 1'
+          git push --force origin "$RELAY_BRANCH"
+          for p in "${parts[@]:7:7}"; do git add "$p"; done
+          git commit -m 'chore: temporary public FA relay parts 2'
+          git push origin "$RELAY_BRANCH"
+          for p in "${parts[@]:14}"; do git add "$p"; done
+          git commit -m 'chore: temporary public FA relay parts 3'
+          git push origin "$RELAY_BRANCH"
